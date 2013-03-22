@@ -13,6 +13,8 @@ NMAKE=MAKEFLAGS="CL" nmake
 # NMAKE=MAKEFLAGS="CL" jom
 
 -include $(dir $(firstword $(MAKEFILE_LIST)))config.mk
+-include $(dir $(firstword $(MAKEFILE_LIST)))../config.mk
+-include $(dir $(firstword $(MAKEFILE_LIST)))../local-config.mk
 -include $(dir $(firstword $(MAKEFILE_LIST)))local-config.mk
 
 release:
