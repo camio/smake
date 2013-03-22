@@ -50,41 +50,49 @@ DEPENDPATH  += src include ../build/include
 ## Build Options
 ##################
 
-# Suppress spurious warnings
-win32-msvc2010|win32-msvc2008:QMAKE_CXXFLAGS += /wd4100 /wd4800 /wd4345
+win32-msvc2010|win32-msvc2012 {
+    # We disable Qt's warnings because, otherwise, they come after our warning
+    # suppressions on the command line and override them. This is technically only
+    # necessary for vs2012.
+    QMAKE_CXXFLAGS_WARN_ON = ""
+    QMAKE_CXXFLAGS += -W3
 
-# Increase the heap space of the compiler 200=twice as much. 
-# win32-msvc2010:QMAKE_CXXFLAGS -= -Zm200
-# win32-msvc2010:QMAKE_CXXFLAGS += /Zm1000
+    # Suppress spurious warnings
+    QMAKE_CXXFLAGS += /wd4100 /wd4800 /wd4345
 
-#This enables debugging symbols in release mode (vs2008 doesn't support this)
-release:win32-msvc2010:QMAKE_CXXFLAGS += /Zi
-release:win32-msvc2010:QMAKE_CFLAGS += /Zi
-release:win32-msvc2010:QMAKE_LFLAGS_RELEASE += /DEBUG
+    # Increase the heap space of the compiler 200=twice as much. 
+    # QMAKE_CXXFLAGS -= -Zm200
+    # QMAKE_CXXFLAGS += /Zm1000
 
-#This enables incremental linking in release mode
-release:win32-msvc2010:QMAKE_LFLAGS_RELEASE += /INCREMENTAL
-#As an alternative, this makes the executable 10-20% smaller, but linking takes
-#longer.
-#release:win32-msvc2010:QMAKE_LFLAGS_RELEASE += /OPT:REF /OPT:ICF
+    # Enables debugging symbols in release mode (vs2008 doesn't support this)
+    release:QMAKE_CXXFLAGS += /Zi
+    release:QMAKE_CFLAGS += /Zi
+    release:QMAKE_LFLAGS_RELEASE += /DEBUG
 
-# Speedup builds on multicore computers
-win32-msvc2010|win32-msvc2008:QMAKE_CXXFLAGS += /MP
-win32-msvc2010|win32-msvc2008:QMAKE_CFLAGS += /MP
+    # Enables incremental linking in release mode
+    release:QMAKE_LFLAGS_RELEASE += /INCREMENTAL
+    # As an alternative, this makes the executable 10-20% smaller, but linking takes
+    # longer.
+    # release:QMAKE_LFLAGS_RELEASE += /OPT:REF /OPT:ICF
 
-# This corrects a compilation error I get with a particular file. Not sure
-win32-msvc2010:QMAKE_CXXFLAGS += /bigobj
+    # Speedup builds on multicore computers
+    QMAKE_CXXFLAGS += /MP
+    QMAKE_CFLAGS += /MP
+
+    # Enables "large object file" mode which is required for certain source files.
+    QMAKE_CXXFLAGS += /bigobj
+
+    # Removes more spurious warnings when compiling
+    DEFINES += _CRT_SECURE_NO_WARNINGS
+
+    # This disables checked iterators. It shouldn't be enabled unless _all_ linked
+    # libraries do the same.
+    # release:DEFINES += _SECURE_SCL=0
+}
 
 # This works around a bug in moc that conflicts with qt. See:
 # http://bugreports.qt-project.org//browse/QTBUG-22829
 QMAKE_MOC = $$QMAKE_MOC -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED -DBOOST_MPL_BITAND_HPP_INCLUDED -DBOOST_MATH_CONSTANTS_CONSTANTS_INCLUDED -DBOOST_LEXICAL_CAST_INCLUDED
-
-# Removes more spurious warnings when compiling
-win32-msvc2010:DEFINES += _CRT_SECURE_NO_WARNINGS
-
-# This disables checked iterators. It shouldn't be enabled unless _all_ linked
-# libraries do the same.
-# release:win32-msvc2008:DEFINES += _SECURE_SCL=0
 
 DEFINES += QT_NO_KEYWORDS
 

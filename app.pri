@@ -23,16 +23,16 @@ defineTest(addStaticLibDependency) {
 
 TEMPLATE = app
 CONFIG += link_prl
-win32-msvc2010:CONFIG -= embed_manifest_exe
+win32-msvc2010|win32-msvc2012:CONFIG -= embed_manifest_exe
 
 ######################
 ## Output File Options
 ######################
 
 DESTDIR = bin
-
-win32-msvc2010:QMAKE_CXXFLAGS_RELEASE += /Fdbin/$${TARGET}.pdb
-win32-msvc2010:QMAKE_CFLAGS_RELEASE += /Fdbin/$${TARGET}.pdb
-
-win32-msvc2010:QMAKE_CXXFLAGS_DEBUG += /Fdbin/$${TARGET}.pdb
-win32-msvc2010:QMAKE_CFLAGS_DEBUG += /Fdbin/$${TARGET}.pdb
+win32-msvc2010|win32-msvc2012 {
+    QMAKE_CXXFLAGS_RELEASE += /Fdbin/$${TARGET}.pdb
+    QMAKE_CFLAGS_RELEASE += /Fdbin/$${TARGET}.pdb
+    QMAKE_CXXFLAGS_DEBUG += /Fdbin/$${TARGET}.pdb
+    QMAKE_CFLAGS_DEBUG += /Fdbin/$${TARGET}.pdb
+}

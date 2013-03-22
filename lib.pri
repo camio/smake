@@ -36,9 +36,9 @@ CONFIG += staticlib create_prl
 ######################
 
 DESTDIR = lib
-
-win32-msvc2010:QMAKE_CXXFLAGS_RELEASE += /Fdlib/$${TARGET}.pdb
-win32-msvc2010:QMAKE_CFLAGS_RELEASE += /Fdlib/$${TARGET}.pdb
-
-win32-msvc2010:QMAKE_CXXFLAGS_DEBUG += /Fdlib/$${TARGET}.pdb
-win32-msvc2010:QMAKE_CFLAGS_DEBUG += /Fdlib/$${TARGET}.pdb
+win32-msvc2010|win32-msvc2012 {
+    QMAKE_CXXFLAGS_RELEASE += /Fdlib/$${TARGET}.pdb
+    QMAKE_CFLAGS_RELEASE += /Fdlib/$${TARGET}.pdb
+    QMAKE_CXXFLAGS_DEBUG += /Fdlib/$${TARGET}.pdb
+    QMAKE_CFLAGS_DEBUG += /Fdlib/$${TARGET}.pdb
+}
