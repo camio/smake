@@ -27,7 +27,7 @@ build/$(NAME).mak build/$(NAME).mak.Debug build/$(NAME).mak.Release : $(NAME).pr
 
 %.obj: build/$(NAME).mak
 	@echo "Entering dir 'build'"
-	cd build; $(NMAKE) -F $(NAME).mak.Debug "build\\debug_objs\\$@"
+	cd build; $(NMAKE) -F $(NAME).mak.Debug "objs_debug\\$@"
 	@echo "Leaving dir"
 
 .PHONY: clean
