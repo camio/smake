@@ -58,6 +58,15 @@ define add-run-target
   .PHONY: $1d
   $1d: build/bin/$(NAME)d.exe $$$$(DEBUG_RUN_DEPS)
 	  $$< $2
+
+  # The following two rules allow one to run their application while
+  # eliding all the dependency analysis.
+  .PHONY: $1/fast
+  $1/fast:
+	  build/bin/$(NAME).exe
+  .PHONY: $1d/fast
+  $1d/fast:
+	  build/bin/$(NAME)d.exe
 endef
 
 $(eval $(call add-run-target,run) )
