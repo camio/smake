@@ -47,11 +47,15 @@ endef
 # Creates a new run target given command line arguments to the executable.
 #
 # $(call add-run-target,name,args)
+#
+# Note that we need to use secondary expansion for the dependencies
+# because of the $(call add-run-target,run) immediately following
+# this call. After the application includes this Makefile, it
+# may add more runtime dependencies.
+#
+# The x/fast rules allow one to run their application while
+# eliding all the dependency analysis.
 define add-run-target
-  # Note that we need to use secondary expansion for the dependencies
-  # because of the $(call add-run-target,run) immediately following
-  # this call. After the application includes this Makefile, it
-  # may add more runtime dependencies.
   .PHONY: $1
   $1: build/bin/$(NAME).exe $$$$(RELEASE_RUN_DEPS)
 	  $$< $2
@@ -59,8 +63,6 @@ define add-run-target
   $1d: build/bin/$(NAME)d.exe $$$$(DEBUG_RUN_DEPS)
 	  $$< $2
 
-  # The following two rules allow one to run their application while
-  # eliding all the dependency analysis.
   .PHONY: $1/fast
   $1/fast:
 	  build/bin/$(NAME).exe
