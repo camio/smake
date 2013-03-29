@@ -48,11 +48,15 @@ endef
 #
 # $(call add-run-target,name,args)
 define add-run-target
+  # Note that we need to use secondary expansion for the dependencies
+  # because of the $(call add-run-target,run) immediately following
+  # this call. After the application includes this Makefile, it
+  # may add more runtime dependencies.
   .PHONY: $1
-  $1: build/bin/$(NAME).exe $$(RELEASE_RUN_DEPS)
+  $1: build/bin/$(NAME).exe $$$$(RELEASE_RUN_DEPS)
 	  $$< $2
   .PHONY: $1d
-  $1d: build/bin/$(NAME)d.exe $$(DEBUG_RUN_DEPS)
+  $1d: build/bin/$(NAME)d.exe $$$$(DEBUG_RUN_DEPS)
 	  $$< $2
 endef
 
