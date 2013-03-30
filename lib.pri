@@ -13,15 +13,14 @@ defineTest(addStaticLibDependency) {
   } else {
       LIB_PATH = ../$${1}/build/lib/$${2}.lib
   }
-  # TODO: remove these comments (and the export) if true.
-  # Hrm, I think the following line is only necessary for applications
-  # LIBS += $$LIB_PATH
-  POST_TARGETDEPS += $$LIB_PATH
+  # Although we aren't actually linking to other static libraries when we
+  # create a static library, the following line will help libraries that
+  # link to this library link to the others using the link_prl mechanism.
+  LIBS += $$LIB_PATH
   
   export(INCLUDEPATH)
   export(DEPENDPATH)
-#  export(LIBS)
-  export(POST_TARGETDEPS)
+  export(LIBS)
 }
 
 ##################
