@@ -28,6 +28,9 @@ TEMPLATE = app
 CONFIG += link_prl
 win32-msvc2010|win32-msvc2012:CONFIG -= embed_manifest_exe
 
+# The default stack is 1MB, change that to 8MB.
+win32-msvc2010|win32-msvc2012:QMAKE_LFLAGS += /STACK:8388608
+
 ######################
 ## Output File Options
 ######################
