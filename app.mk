@@ -58,17 +58,17 @@ endef
 define add-run-target
   .PHONY: $1
   $1: build/bin/$(NAME).exe $$$$(RELEASE_RUN_DEPS)
-	  $$< $2
+	  $$< $2 | tee build/$1-output.txt
   .PHONY: $1d
   $1d: build/bin/$(NAME)d.exe $$$$(DEBUG_RUN_DEPS)
-	  $$< $2
+	  $$< $2 | tee build/$1d-output.txt
 
   .PHONY: $1/fast
   $1/fast:
-	  build/bin/$(NAME).exe
+	  build/bin/$(NAME).exe $2 | tee build/$1-output.txt
   .PHONY: $1d/fast
   $1d/fast:
-	  build/bin/$(NAME)d.exe
+	  build/bin/$(NAME)d.exe $2 | tee build/$1d-output.txt
 endef
 
 $(eval $(call add-run-target,run) )
