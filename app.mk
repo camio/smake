@@ -29,11 +29,19 @@ define add-dll-dependency
   RELEASE_RUN_DEPS += build/bin/$2.dll
   DEBUG_RUN_DEPS += build/bin/$2d.dll
 
-  .PHONY: $1/build/lib/$2.dll
+  $(if $(SMAKE_USE_EXPLICITLY_CHECKED_DEPENDENCIES)
+   , $(if $(filter $2,$(SMAKE_EXPLICITLY_CHECKED_DEPENDENCIES))
+      , .PHONY: $1/build/lib/$2.dll
+        .PHONY: $1/build/lib/$2d.dll
+      ,
+      )
+   , .PHONY: $1/build/lib/$2.dll
+     .PHONY: $1/build/lib/$2d.dll
+   )
+
   $1/build/lib/$2.dll:
 	  $(MAKE) --directory=$1 build/lib/$2.lib
 
-  .PHONY: $1/build/lib/$2d.dll
   $1/build/lib/$2d.dll:
 	  $(MAKE) --directory=$1 build/lib/$2d.lib
 
@@ -77,8 +85,17 @@ $(eval $(call add-run-target,run) )
 #
 # $(call add-boost-dependency,lib)
 define add-boost-dependency
-  QMAKE_DEPS += boost_$1
-  .PHONY: boost_$1
-  boost_$1:
-	  $(MAKE) --directory=$(BOOST_MAKE_PATH) $1
+  add-boost-dependency_local_lib := $(BOOST_PATH)/stage/lib/libboost_$1-$(BOOST_TOOLSET_ID)-mt-$(BOOST_VERSION_ID).lib
+  QMAKE_DEPS += $$(add-boost-dependency_local_lib)
+
+  $(if $(SMAKE_USE_EXPLICITLY_CHECKED_DEPENDENCIES)
+   , $(if $(filter boost,$(SMAKE_EXPLICITLY_CHECKED_DEPENDENCIES))
+      , .PHONY: $$(add-boost-dependency_local_lib)
+      ,
+      )
+   , .PHONY: $$(add-boost-dependency_local_lib)
+   )
+
+  $$(add-boost-dependency_local_lib):
+	 $(MAKE) --directory=$(BOOST_MAKE_PATH) $1
 endef

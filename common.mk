@@ -7,10 +7,21 @@
 #
 # Generally, you use add-library-dependency to depend on a library that is
 # created in the smake way.
+#
+# If you define SMAKE_USE_EXPLICITLY_CHECKED_DEPENDENCIES to a non-empty string
+# in a config.mk, then this enables explicitly checked dependencies mode. In
+# this mode, if a dependency does not exist, it will be built. If it already
+# exists it will not bother to see if it needs to be updated. To ensure that a
+# dependency *is* rebuilt if one of its source files requires it, make sure it
+# is listed in the SMAKE_EXPLICITLY_CHECKED_DEPENDENCIES variable.
 
 #The L here is for no-logo
 NMAKE=MAKEFLAGS="CL" nmake
 # NMAKE=MAKEFLAGS="CL" jom
+
+QMAKE_DEPS:=
+DEBUG_DEPS:=
+RELEASE_DEPS:=
 
 -include $(dir $(firstword $(MAKEFILE_LIST)))config.mk
 -include $(dir $(firstword $(MAKEFILE_LIST)))../config.mk
@@ -54,11 +65,19 @@ define add-library-dependency
   RELEASE_DEPS += $1/build/lib/$2.lib
   DEBUG_DEPS += $1/build/lib/$2d.lib
 
-  .PHONY: $1/build/lib/$2.lib
+  $(if $(SMAKE_USE_EXPLICITLY_CHECKED_DEPENDENCIES)
+   , $(if $(filter $2,$(SMAKE_EXPLICITLY_CHECKED_DEPENDENCIES))
+      , .PHONY: $1/build/lib/$2.lib
+        .PHONY: $1/build/lib/$2d.lib
+      ,
+      )
+   , .PHONY: $1/build/lib/$2.lib
+     .PHONY: $1/build/lib/$2d.lib
+   )
+
   $1/build/lib/$2.lib:
 	  $(MAKE) --directory=$1 build/lib/$2.lib
 
-  .PHONY: $1/build/lib/$2d.lib
   $1/build/lib/$2d.lib:
 	  $(MAKE) --directory=$1 build/lib/$2d.lib
 endef
