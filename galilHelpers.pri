@@ -15,3 +15,16 @@ defineTest(addGalilDependency) {
   export(INCLUDEPATH)
   export(LIBS)
 }
+
+# addDMCWin32Dependency(DMCWin32_path)
+defineTest(addDMCWin32Dependency) {
+  # We don't include the CPP path because the C interface is generally
+  # superior.
+  INCLUDEPATH += ../$$DMCWIN32_PATH/INCLUDE
+  win32 {
+    LIBS += -L../$$DMCWIN32_PATH/LIB -lDMCMLIB -lDMC32
+    win32-msvc2008|win32-msvc2010|win32-msvc2012:LIBS += -luser32
+  }
+  export(INCLUDEPATH)
+  export(LIBS)
+}
