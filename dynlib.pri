@@ -26,7 +26,7 @@ defineTest(addStaticLibDependency) {
 
 TEMPLATE = lib
 
-BUILD_DLL_DEF = $$upper($${TARGET}_BUILD_SHARED_LIB)
+BUILD_DLL_DEF = $$upper($${NAME}_BUILD_SHARED_LIB)
 
 DEFINES += $$BUILD_DLL_DEF
 
