@@ -6,9 +6,19 @@ defineTest(addStaticLibDependency) {
   DEPENDPATH  += $${1}/include $${1}/build/include
 
   CONFIG(debug, debug|release) {
+    # If there's a lib folder, this must be closed-source library that is
+    # already built.
+    exists( $${1}/lib/$${2}d.lib ) {
+      LIB_PATH = ../$${1}/lib/$${2}d.lib
+    } else {
       LIB_PATH = ../$${1}/build/lib/$${2}d.lib
+    }
   } else {
+    exists( $${1}/lib/$${2}.lib ) {
+      LIB_PATH = ../$${1}/lib/$${2}.lib
+    } else {
       LIB_PATH = ../$${1}/build/lib/$${2}.lib
+    }
   }
   LIBS += $$LIB_PATH
   # Without this append, changes in the library will not trigger a new link.

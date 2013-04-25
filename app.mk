@@ -22,34 +22,48 @@ build/bin/$(NAME)d.exe: $$(DEBUG_DEPS) build/$(NAME).mak
 	cd build; $(NMAKE) -F $(NAME).mak debug
 	@echo "Leaving dir"
 
-# Use this to note a dll dependency that is required to run the application
+# Use this to note a dll dependency that is required to run the application.
+# The dll may be part of a binary only repository with the dll in
+# <library-path>/lib/<library-name>.dll or be source buildable with the dll
+# residing in <library-path>/build/lib/<library-name>.dll.
+#
+# If it is source buildable, the system will attempt to build the file if it
+# doesn't not already exist. Also, it will attempt to update the file unless 
+# SMAKE_USE_EXPLICITLY_CHECKED_DEPENDENCIES is enabled and this repository is
+# not in the SMAKE_EXPLICITLY_CHECKED_DEPENDENCIES list.
 #
 # $(call add-dll-dependency, library-path, library-name )
 define add-dll-dependency
   RELEASE_RUN_DEPS += build/bin/$2.dll
   DEBUG_RUN_DEPS += build/bin/$2d.dll
 
-  $(if $(SMAKE_USE_EXPLICITLY_CHECKED_DEPENDENCIES)
-   , $(if $(filter $2,$(SMAKE_EXPLICITLY_CHECKED_DEPENDENCIES))
+  $(if $(wildcard $1/lib/$2.dll)
+   , build/bin/$2.dll : $1/lib/$2.dll
+	     cp $$< $$@
+
+     build/bin/$2d.dll : $1/lib/$2d.dll
+	      cp $$< $$@
+   , $(if $(SMAKE_USE_EXPLICITLY_CHECKED_DEPENDENCIES)
+      , $(if $(filter $2,$(SMAKE_EXPLICITLY_CHECKED_DEPENDENCIES))
+         , .PHONY: $1/build/lib/$2.dll
+           .PHONY: $1/build/lib/$2d.dll
+         ,
+         )
       , .PHONY: $1/build/lib/$2.dll
         .PHONY: $1/build/lib/$2d.dll
-      ,
       )
-   , .PHONY: $1/build/lib/$2.dll
-     .PHONY: $1/build/lib/$2d.dll
+     $1/build/lib/$2.dll:
+	     $(MAKE) --directory=$1 build/lib/$2.lib
+
+     $1/build/lib/$2d.dll:
+	     $(MAKE) --directory=$1 build/lib/$2d.lib
+
+     build/bin/$2.dll : $1/build/lib/$2.dll
+	     cp $$< $$@
+
+     build/bin/$2d.dll : $1/build/lib/$2d.dll
+	     cp $$< $$@
    )
-
-  $1/build/lib/$2.dll:
-	  $(MAKE) --directory=$1 build/lib/$2.lib
-
-  $1/build/lib/$2d.dll:
-	  $(MAKE) --directory=$1 build/lib/$2d.lib
-
-  build/bin/$2.dll : $1/build/lib/$2.dll
-	  cp $$< $$@
-
-  build/bin/$2d.dll : $1/build/lib/$2d.dll
-	  cp $$< $$@
 endef
 
 # Creates a new run target given command line arguments to the executable.
