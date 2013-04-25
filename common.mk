@@ -99,3 +99,22 @@ define add-target-pngFromSvg-dependency
   build/img/$1.png: src/$2.svg | $$$$(@D)/.f
 	  $(INKSCAPE_EXE) --export-width=$3 $4 --export-png="$$@" "$$<"
 endef
+
+# Use this to add boost dependencies
+#
+# $(call add-boost-dependency,lib)
+define add-boost-dependency
+  add-boost-dependency_local_lib := $(BOOST_PATH)/stage/lib/libboost_$1-$(BOOST_TOOLSET_ID)-mt-$(BOOST_VERSION_ID).lib
+  QMAKE_DEPS += $$(add-boost-dependency_local_lib)
+
+  $(if $(SMAKE_USE_EXPLICITLY_CHECKED_DEPENDENCIES)
+   , $(if $(filter boost,$(SMAKE_EXPLICITLY_CHECKED_DEPENDENCIES))
+      , .PHONY: $$(add-boost-dependency_local_lib)
+      ,
+      )
+   , .PHONY: $$(add-boost-dependency_local_lib)
+   )
+
+  $$(add-boost-dependency_local_lib):
+	 $(MAKE) --directory=$(BOOST_MAKE_PATH) $1
+endef
