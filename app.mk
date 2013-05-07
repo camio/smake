@@ -43,14 +43,21 @@ define add-dll-dependency
 
      build/bin/$2d.dll : $1/lib/$2d.dll
 	      cp $$< $$@
+
+     RELEASE_DEPS += $1/lib/$2.lib
+     DEBUG_DEPS += $1/lib/$2d.lib
    , $(if $(SMAKE_USE_EXPLICITLY_CHECKED_DEPENDENCIES)
       , $(if $(filter $2,$(SMAKE_EXPLICITLY_CHECKED_DEPENDENCIES))
          , .PHONY: $1/build/lib/$2.dll
            .PHONY: $1/build/lib/$2d.dll
+           .PHONY: $1/build/lib/$2.lib
+           .PHONY: $1/build/lib/$2d.lib
          ,
          )
       , .PHONY: $1/build/lib/$2.dll
         .PHONY: $1/build/lib/$2d.dll
+        .PHONY: $1/build/lib/$2.lib
+        .PHONY: $1/build/lib/$2d.lib
       )
      $1/build/lib/$2.dll:
 	     $(MAKE) --directory=$1 build/lib/$2.lib
@@ -63,6 +70,15 @@ define add-dll-dependency
 
      build/bin/$2d.dll : $1/build/lib/$2d.dll
 	     cp $$< $$@
+
+     $1/build/lib/$2.lib:
+	     $(MAKE) --directory=$1 build/lib/$2.lib
+
+     $1/build/lib/$2d.lib:
+	     $(MAKE) --directory=$1 build/lib/$2d.lib
+
+     RELEASE_DEPS += $1/build/lib/$2.lib
+     DEBUG_DEPS += $1/build/lib/$2d.lib
    )
 endef
 
