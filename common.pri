@@ -58,7 +58,7 @@ win32-msvc2010|win32-msvc2012 {
     QMAKE_CXXFLAGS += -W3
 
     # Suppress spurious warnings
-    QMAKE_CXXFLAGS += /wd4100 /wd4800 /wd4345 /wd4251
+    QMAKE_CXXFLAGS += /wd4100 /wd4800 /wd4345 /wd4251 /wd4275
 
     # Increase the heap space of the compiler 200=twice as much. 
     # QMAKE_CXXFLAGS -= -Zm200
