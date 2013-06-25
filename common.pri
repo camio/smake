@@ -57,6 +57,14 @@ win32-msvc2010|win32-msvc2012 {
     QMAKE_CXXFLAGS_WARN_ON = ""
     QMAKE_CXXFLAGS += -W3
 
+    # Ideally, we would like to change Qt's default behavior of removing the
+    # wchar_t type. This is problematic, though, because Qt would essentially
+    # need to be rebuilt with the replaced flags for this to work. This is
+    # resolved in Qt5.
+    #
+    # QMAKE_CXXFLAGS -= -Zc:wchar_t-
+    # QMAKE_CXXFLAGS += -Zc:wchar_t
+
     # Suppress spurious warnings
     QMAKE_CXXFLAGS += /wd4100 /wd4800 /wd4345 /wd4251 /wd4275
 
@@ -88,6 +96,7 @@ win32-msvc2010|win32-msvc2012 {
     # This disables checked iterators. It shouldn't be enabled unless _all_ linked
     # libraries do the same.
     # release:DEFINES += _SECURE_SCL=0
+    
 }
 
 # This works around a bug in moc that conflicts with qt. See:
