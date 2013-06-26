@@ -1,4 +1,4 @@
-include $(dir $(lastword $(MAKEFILE_LIST)))common.mk
+include $(dir $(lastword $(MAKEFILE_LIST)))common-c++.mk
 
 .PHONY: debug
 debug: build/bin/$(NAME)d.exe
