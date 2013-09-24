@@ -1,0 +1,11 @@
+Purpose
+=======
+'smake' is a collection of qmake and GNU make scripts that automate the
+creation of libraries and applications.
+
+Implementation Notes
+====================
+The following URL is a good example where undocumented qmake functionality is
+used extensively, such as export and the use of tests as procedures.
+
+https://qt.gitorious.org/qt/qtbase/blobs/e3554d72745d9c439b1792c20be09871506afeef/mkspecs/features/qt_functions.prf
