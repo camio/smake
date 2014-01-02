@@ -57,6 +57,11 @@ win32-msvc2010|win32-msvc2012 {
     QMAKE_CXXFLAGS_WARN_ON = ""
     QMAKE_CXXFLAGS += -W3
 
+    # Ignore 'lib.exe' warning for objects that do not define any symbols.
+    # Objects without symbols are fine because we sometimes have .o files
+    # created as the result of compilation tests that don't export any symbols.
+    QMAKE_LIB += /IGNORE:4221
+
     # Ideally, we would like to change Qt's default behavior of removing the
     # wchar_t type. This is problematic, though, because Qt would essentially
     # need to be rebuilt with the replaced flags for this to work. This is
