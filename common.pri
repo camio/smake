@@ -50,7 +50,7 @@ DEPENDPATH  += src include ../build/include
 ## Build Options
 ##################
 
-win32-msvc2010|win32-msvc2012 {
+win32-msvc2010|win32-msvc2012|win32-msvc2013 {
     # We disable Qt's warnings because, otherwise, they come after our warning
     # suppressions on the command line and override them. This is technically only
     # necessary for vs2012.
@@ -104,7 +104,6 @@ win32-msvc2010|win32-msvc2012 {
     # This disables checked iterators. It shouldn't be enabled unless _all_ linked
     # libraries do the same.
     # release:DEFINES += _SECURE_SCL=0
-    
 }
 
 # This works around a bug in moc that conflicts with qt. See:
